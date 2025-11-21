@@ -2,7 +2,11 @@
 
 ## Supported variants
 
-Currently only the regular variant is supported.
+| Variant | Board / SKU | Supported | Tested |
+|---------|-------------|-------------:|------------------:|
+| Regular | PCBA-DBM-r3 | :joy: | 1000 |
+| Spectrum Analyzer    | PCBA-DBM-r3-SA | TBD | TBD |
+| Pro     | PCBA-DBM-r3-PRO | TBD | TBD |
 
 ## Installation
 
