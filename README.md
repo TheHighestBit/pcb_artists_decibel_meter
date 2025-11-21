@@ -4,9 +4,9 @@
 
 | Variant | Board / SKU | Supported | Tested |
 |---------|-------------|-------------:|------------------:|
-| Regular | PCBA-DBM-r3 | :joy: | 1000 |
-| Spectrum Analyzer    | PCBA-DBM-r3-SA | TBD | TBD |
-| Pro     | PCBA-DBM-r3-PRO | TBD | TBD |
+| Regular | PCBA-DBM-r3 | :white_check_mark: | :white_check_mark: |
+| Spectrum Analyzer    | PCBA-DBM-r3-SA | :x: | :x: |
+| Pro     | PCBA-DBM-r3-PRO | :x: | :x: |
 
 ## Installation
 
