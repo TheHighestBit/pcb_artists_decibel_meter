@@ -71,9 +71,9 @@ class DecibelMeter {
     }
 
     /**
-     * Power up the device.
+     * Power up the device. All settings are restored to defaults.
      * 
-     * This only needed if the device was previously powered down with powerDown().
+     * This is only needed if the device was previously powered down with powerDown().
      *
      * @returns {Promise<void>} Resolves after the device is powered up.
      * @throws {Error} If underlying I/O operations fail.
@@ -145,8 +145,7 @@ class DecibelMeter {
      * const db = await device.readDecibel();
      */
     async readDecibel() {
-        const decibelRaw = await this._readByte(DECIBEL);
-        return decibelRaw;
+        return await this._readByte(DECIBEL);
     }
 
     /**
@@ -161,8 +160,7 @@ class DecibelMeter {
      * const minDb = await device.readMin();
      */
     async readMin() {
-        const minRaw = await this._readByte(MIN);
-        return minRaw;
+        return await this._readByte(MIN);
     }
     
     /**
@@ -177,8 +175,7 @@ class DecibelMeter {
      * const maxDb = await device.readMax();
      */
     async readMax() {
-        const maxRaw = await this._readByte(MAX);
-        return maxRaw;
+        return await this._readByte(MAX);
     }
 
     /**
@@ -191,6 +188,7 @@ class DecibelMeter {
      * @throws {Error} If underlying I/O operations fail.
      * @example
      * const history = await device.readHistory();
+     * console.log('Oldest decibel reading:', history[history.length - 1]);
      */
     async readHistory() {
         const result = [];
