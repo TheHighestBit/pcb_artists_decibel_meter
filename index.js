@@ -2,6 +2,7 @@ const i2c = require('i2c-bus');
 
 const DEFAULT_ADDRESS = 0x48;
 
+const VERSION = 0x00;
 const CONTROL = 0x06;
 const TAVG_HIGH = 0x07;
 const TAVG_LOW = 0x08;
@@ -10,6 +11,8 @@ const DECIBEL = 0x0A;
 const MIN = 0x0B;
 const MAX = 0x0C;
 const DBHISTORY_0 = 0x14;
+const FREQ_64BINS_0 = 0x78;
+const FREQ_16BINS_0 = 0xB8;
 
 const Filter = {
     // No filter
@@ -34,6 +37,14 @@ class DecibelMeter {
 
         this.filter = Filter.A_WEIGHTING; // default
         this.averagingTime = 1000; // default
+
+        // Get device version
+        this.i2cBus.then(async (bus) => {
+            const version = await bus.readByte(this.address, VERSION);
+            this.isRegular = (version & 0xF0) === 0x31;
+        }).catch((err) => {
+            throw new Error(`Failed to communicate with Decibel Meter at address 0x${this.address.toString(16)}: ${err.message}`);
+        });
     }
 
     /**
@@ -204,6 +215,58 @@ class DecibelMeter {
         }
 
         return result;
+    }
+
+    /**
+     * Only available in Spectrum Analyzer version.
+     * 
+     * Frequency components of the signal represented as 64 bands (8 kHz total band width). 
+     * The number represents the magnitude of the frequency component in dB SPL.
+     * 
+     * No weighting filters are applied to frequency data.
+     * 
+     * @returns {Promise<number[]>} An array of 64 frequency bin values.
+     * @throws {Error} If underlying I/O operations fail.
+     * @throws {Error} If called on regular version of the Decibel Meter.
+     */
+    async readFrequencyBins64() {
+        if (this.isRegular) {
+            throw new Error('Frequency bins are only available in Spectrum Analyzer version of the Decibel Meter');
+        }
+
+        const bins = [];
+        const bufLower = await this._readBlock(FREQ_64BINS_0, 32);
+        const bufUpper = await this._readBlock(FREQ_64BINS_0 + 32, 32);
+        
+        bufLower.forEach(b => bins.push(b));
+        bufUpper.forEach(b => bins.push(b));
+
+        return bins;
+    }
+
+    /**
+     * Only available in Spectrum Analyzer version.
+     * 
+     * Frequency components of the signal represented as 16 bands (8 kHz total band width). 
+     * The number represents the magnitude of the frequency component in dB SPL.
+     * 
+     * No weighting filters are applied to frequency data.
+     * 
+     * @returns {Promise<number[]>} An array of 16 frequency bin values.
+     * @throws {Error} If underlying I/O operations fail.
+     * @throws {Error} If called on regular version of the Decibel Meter.
+     */
+    async readFrequencyBins16() {
+        if (this.isRegular) {
+            throw new Error('Frequency bins are only available in Spectrum Analyzer version of the Decibel Meter');
+        }
+
+        const bins = [];
+        const buf = await this._readBlock(FREQ_16BINS_0, 16);
+        
+        buf.forEach(b => bins.push(b));
+
+        return bins;
     }
 
     /**

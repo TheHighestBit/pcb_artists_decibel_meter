@@ -1,13 +1,13 @@
 {
   "name": "pcb-artists-decibel-meter",
   "version": "1.0.0",
-  "description": "",
+  "description": "A driver for the PCB Artists Decibel Meter sensor.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["decibel", "meter", "pcb", "artists", "i2c", "sensor"],
+  "author": "TheHighestBit",
   "license": "ISC",
   "dependencies": {
     "i2c-bus": "^5.2.3"
@@ -17,5 +17,9 @@
     "@types/node": "^24.10.1",
     "eslint": "^9.39.1",
     "globals": "^16.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheHighestBit/pcb-artists-decibel-meter.git"
   }
 }
