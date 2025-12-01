@@ -19,5 +19,34 @@ npm install pcb-artists-decibel-meter
 ## Usage
 
 ```javascript
-const { DecibelMeter } = require()
+const { DecibelMeter } = require('pcb-artists-decibel-meter');
+
+(async () => {
+    const device = new DecibelMeter();
+
+    while (true) {
+        const db = await device.readDecibel();
+        const minDb = await device.readMin();
+        const maxDb = await device.readMax();
+
+        console.log(`Decibel: ${db} dB, Min: ${minDb} dB, Max: ${maxDb} dB`);
+
+        await new Promise((r) => setTimeout(r, 1000));
+    }
+})();
+```
+
+```javascript
+const { DecibelMeter } = require('pcb-artists-decibel-meter');
+
+(async () => {
+    const device = new DecibelMeter();
+    await device.clearHistory();
+
+    while (true) {
+        const history = await device.readHistory();
+        console.log('Decibel History:', history);
+        await new Promise((r) => setTimeout(r, 1000));
+    }
+})();
 ```

@@ -41,7 +41,7 @@ class DecibelMeter {
         // Get device version
         this.i2cBus.then(async (bus) => {
             const version = await bus.readByte(this.address, VERSION);
-            this.isRegular = (version & 0xF0) === 0x31;
+            this.isRegular = version === 0x31;
         }).catch((err) => {
             throw new Error(`Failed to communicate with Decibel Meter at address 0x${this.address.toString(16)}: ${err.message}`);
         });
