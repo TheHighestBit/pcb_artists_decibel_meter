@@ -1,6 +1,6 @@
 {
   "name": "pcb-artists-decibel-meter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A driver for the PCB Artists Decibel Meter sensor.",
   "main": "index.js",
   "scripts": {

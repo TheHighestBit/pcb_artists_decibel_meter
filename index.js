@@ -34,17 +34,10 @@ class DecibelMeter {
     constructor({i2cBusNumber = 1, address = DEFAULT_ADDRESS} = {}) {
         this.i2cBus = i2c.openPromisified(i2cBusNumber);
         this.address = address;
+        this.isRegular = undefined;
 
         this.filter = Filter.A_WEIGHTING; // default
         this.averagingTime = 1000; // default
-
-        // Get device version
-        this.i2cBus.then(async (bus) => {
-            const version = await bus.readByte(this.address, VERSION);
-            this.isRegular = version === 0x31;
-        }).catch((err) => {
-            throw new Error(`Failed to communicate with Decibel Meter at address 0x${this.address.toString(16)}: ${err.message}`);
-        });
     }
 
     /**
@@ -230,7 +223,7 @@ class DecibelMeter {
      * @throws {Error} If called on regular version of the Decibel Meter.
      */
     async readFrequencyBins64() {
-        if (this.isRegular) {
+        if (await this._getIsRegular()) {
             throw new Error('Frequency bins are only available in Spectrum Analyzer version of the Decibel Meter');
         }
 
@@ -257,7 +250,7 @@ class DecibelMeter {
      * @throws {Error} If called on regular version of the Decibel Meter.
      */
     async readFrequencyBins16() {
-        if (this.isRegular) {
+        if (await this._getIsRegular()) {
             throw new Error('Frequency bins are only available in Spectrum Analyzer version of the Decibel Meter');
         }
 
@@ -267,6 +260,22 @@ class DecibelMeter {
         buf.forEach(b => bins.push(b));
 
         return bins;
+    }
+
+    /**
+     * Determine if the device is the regular version or spectrum analyzer version.
+     *
+     * @private
+     * @async
+     * @returns {Promise<boolean>} True if regular version, false if spectrum analyzer version.
+     */
+    async _getIsRegular() {
+        if (this.isRegular === undefined) {
+            const version = await this._readByte(VERSION);
+            this.isRegular = version === 0x31;
+        }
+
+        return this.isRegular;
     }
 
     /**
